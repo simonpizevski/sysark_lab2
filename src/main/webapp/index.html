@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product API Test</title>
+    <link rel="stylesheet" href="main.css">
+    <script>
+        async function addProduct() {
+            const product = {
+                name: document.getElementById('productName').value,
+                category: document.getElementById('productCategory').value,
+                rating: document.getElementById("productRating").value,
+            };
+
+            const response = await fetch('http://localhost:8080/sysark_lab2-1.0-SNAPSHOT/api/products', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(product),
+            });
+
+            if (response.ok) {
+                alert('Product added!');
+                console.log(product);
+                await getAllProducts();
+            } else {
+                const error = await response.text();
+                alert(error);
+            }
+        }
+
+        async function getAllProducts() {
+            const response = await fetch('http://localhost:8080/sysark_lab2-1.0-SNAPSHOT/api/products');
+            const products = await response.json();
+            console.log("Fetched products" + products);
+            const productList = document.getElementById('productList');
+            productList.innerHTML = '';
+            products.forEach(product => {
+                const li = document.createElement('li');
+                li.textContent = `ID: ${product.id}, Name: ${product.name}, Category: ${product.category}`;
+                productList.appendChild(li);
+            });
+        }
+
+        async function getProductById() {
+            const id = document.getElementById('searchId').value;
+            const response = await fetch(`http://localhost:8080/sysark_lab2-1.0-SNAPSHOT/api/products/${id}`);
+            const productLabel = document.getElementById("productLabel");
+            if (response.ok) {
+                const product = await response.json();
+                const productList = document.getElementById('productId');
+                productList.innerHTML = '';
+                const li = document.createElement('li');
+                li.textContent = `ID: ${product.id}, Name: ${product.name}, Category: ${product.category}`;
+                productList.appendChild(li);
+
+            } else {
+                alert('Product not found');
+            }
+        }
+
+        async function getProductsByCategory() {
+            const category = document.getElementById('categorySearch').value;
+            const response = await fetch(`http://localhost:8080/sysark_lab2-1.0-SNAPSHOT/api/products/category/${category}`);
+            const products = await response.json();
+            const productList = document.getElementById('categoryProductList');
+            productList.innerHTML = '';
+            products.forEach(product => {
+                const li = document.createElement('li');
+                li.textContent = `ID: ${product.id}, Name: ${product.name}, Category: ${product.category}`;
+                productList.appendChild(li);
+            });
+        }
+    </script>
+</head>
+<body>
+<h1>Test Product API</h1>
+
+<h2>Add product</h2>
+<label for="productName">Product Name</label>
+<input type="text" id="productName" placeholder="Product Name" required>
+
+<label for="productCategory">Category</label>
+<select id="productCategory" required>
+    <option value="">Select Category</option>
+    <option value="TV">TV</option>
+    <option value="CONSOLE">Console</option>
+    <option value="GAMES">Games</option>
+    <option value="ACCESSORIES">Accessories</option>
+    <option value="COMPUTER">Computer</option>
+</select>
+
+<label for="productRating">Rating:</label>
+<select id="productRating" required>
+    <option value="">Select Rating</option>
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+    <option value="6">6</option>
+    <option value="7">7</option>
+    <option value="8">8</option>
+    <option value="9">9</option>
+    <option value="10">10</option>
+</select>
+
+<button onclick="addProduct()">Add product</button>
+
+<h2>Show all products</h2>
+<button onclick="getAllProducts()">Show products</button>
+<ul id="productList"></ul>
+
+<h2>Search for product by ID</h2>
+<input type="number" id="searchId" placeholder="Product ID" required>
+<p id="productLabel"></p>
+<ul id="productId"></ul>
+<button onclick="getProductById()">Search</button>
+
+<h2>Search for products by category</h2>
+<input type="text" id="categorySearch" placeholder="Category" required>
+<button onclick="getProductsByCategory()">Search</button>
+<ul id="categoryProductList"></ul>
+</body>
+</html>

@@ -1,4 +1,4 @@
-package com.example.sysark_lab2;
+package com.example.sysark_lab2.resources;
 
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
