@@ -11,7 +11,6 @@ public class Warehouse {
     private int nextId = 1;
 
     public Warehouse() {
-        //test commit
         //addProduct(new Product(nextId++, "tv", Category.TV, 5, LocalDate.now(), LocalDate.now()));
     }
 
